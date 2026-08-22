@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://192.168.1.3:5173"],
+    origin: "*",
   }),
 );
 
@@ -15,10 +15,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://192.168.1.3:5173"],
+    origin: "*",
   },
 });
-
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
@@ -38,6 +37,6 @@ io.on("connection", (socket) => {
 
 const port = process.env.PORT || 3005;
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+server.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on http://192.168.1.3:${port}`);
 });
