@@ -1,13 +1,32 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const webSocket = require("socket.io");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
-const port = process.env.PORT;
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+  }),
+);
 
-app.use(cors());
+// 1. Wrap Express in Node's HTTP server
+const server = http.createServer(app);
 
-app.listen(port, () => {
-  console.log(`app is running on port ${port}`);
+// 2. Attach Socket.io to the HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173"],
+  },
+});
+
+app.get("/api/test", (req, res) => {
+  res.status(200).json({ message: "Success!" });
+});
+
+const port = process.env.PORT || 3000;
+
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
